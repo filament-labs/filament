@@ -6,12 +6,12 @@ type GetWalletRequest struct {
 }
 
 type GetWalletResponse struct {
-	ID        string             `json:"id"`         // Unique wallet identifier
-	IsDefault bool               `json:"is_default"` // Is user's default wallet
-	Name      string             `json:"name"`       // User-provided wallet name
-	Address   string             `json:"address"`    // Filecoin f1 address
-	Balance   GetBalanceResponse `json:"balance"`    // Wallet balance
-	CreatedAt int64              `json:"created_at"` // Timestamp
+	ID        string             `json:"id"`
+	IsDefault bool               `json:"is_default"`
+	Name      string             `json:"name"`
+	Addresses map[string]string  `json:"addresses"`
+	Balance   GetBalanceResponse `json:"balance"`
+	CreatedAt int64              `json:"created_at"`
 }
 
 type GetWalletsRequest struct{}

@@ -9,6 +9,7 @@ import (
 func Open(dataDir string) (*badger.DB, error) {
 	dbPath := path.Join(dataDir, "db")
 	opts := badger.DefaultOptions(dbPath)
+	opts.Logger = nil
 
 	db, err := badger.Open(opts)
 	if err != nil {
