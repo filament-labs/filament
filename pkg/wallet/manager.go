@@ -2,20 +2,14 @@ package wallet
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
-	"github.com/dgraph-io/badger/v4"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/google/uuid"
 )
 
-// Manager coordinates wallet lifecycle, persistence, and unlocking.
-// It holds in-memory references to loaded wallets and delegates storage to a *store.
 type Manager struct {
-	wallets   map[string]Wallet // walletID → Wallet
-	store     *store
 	rpcClient *RPCClient
 }
 
@@ -40,27 +34,8 @@ func WithOptions(url, token string) ManagerOption {
 }
 
 // NewManager initializes a Manager with Badger DB and optional configurations
-func NewManager(db *badger.DB, opts ...ManagerOption) (*Manager, error) {
-	if db == nil {
-		return nil, errors.New("db is required")
-	}
-
-	store := newStore(db)
-
-	loaded, err := store.listWallets()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load wallets from DB: %w", err)
-	}
-
-	wallets := make(map[string]Wallet, len(loaded))
-	for _, w := range loaded {
-		wallets[w.ID] = w
-	}
-
-	m := &Manager{
-		store:   store,
-		wallets: wallets,
-	}
+func NewManager(opts ...ManagerOption) (*Manager, error) {
+	m := &Manager{}
 
 	// Apply options
 	for _, opt := range opts {
@@ -83,34 +58,13 @@ func NewManager(db *badger.DB, opts ...ManagerOption) (*Manager, error) {
 	return m, nil
 }
 
-// isWalletUnlocked reports whether the wallet with the given ID is currently unlocked in memory.
-func (m *Manager) isWalletUnlocked(walletID string) bool {
-	w, exists := m.wallets[walletID]
-	return exists && w.key != nil
-}
-
-func (m *Manager) HasWallets() bool {
-	return len(m.wallets) > 0
-}
-
-// UnlockWallets attempts to decrypt and unlock every locked wallet using the supplied keystore passphrase.
-// Already-unlocked wallets are skipped. If any wallet fails to decrypt, the whole operation aborts.
-func (m *Manager) UnlockWallets(keystorePassphrase string) error {
-	for id, w := range m.wallets {
-		if m.isWalletUnlocked(id) {
-			continue
-		}
-
-		key, err := keystore.DecryptKey(w.KeyJSON, keystorePassphrase)
-		if err != nil {
-			return fmt.Errorf("failed to unlock wallet %s: %w", id, err)
-		}
-
-		// Mutate the copy in the map
-		w.key = key
-		m.wallets[id] = w
+func (m *Manager) UnlockWallet(wallet *Wallet, keystorePassphrase string) (*keystore.Key, error) {
+	key, err := keystore.DecryptKey(wallet.KeyJSON, keystorePassphrase)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unlock wallet %s: %w", wallet.ID, err)
 	}
-	return nil
+
+	return key, nil
 }
 
 // CreateWallet generates a brand-new wallet, persists it, and returns the in-memory instance (locked).
@@ -189,13 +143,6 @@ func (m *Manager) createWalletFromMnemonic(mnemonic, name, keystorePassphrase st
 	if recovered {
 		wallet.Meta["recovered"] = "true"
 	}
-
-	// Save wallet
-	if err := m.store.saveWallet(*wallet); err != nil {
-		return nil, err
-	}
-
-	m.wallets[wallet.ID] = *wallet
 
 	return wallet, nil
 }

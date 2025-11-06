@@ -78,8 +78,16 @@ func (ws *WsAPI) Run() error {
 		return fmt.Errorf("failed to run Centrifuge server: %w", err)
 	}
 
-	wsHandler := centrifuge.NewWebsocketHandler(ws.node, centrifuge.WebsocketConfig{})
-	http.Handle("/connection/websocket", wsHandler)
+	wsHandler := centrifuge.NewWebsocketHandler(ws.node, centrifuge.WebsocketConfig{
+		CheckOrigin: func(r *http.Request) bool {
+			originHeader := r.Header.Get("Origin")
+			if originHeader == "" {
+				return true
+			}
+			return originHeader == "http://localhost:3000"
+		},
+	})
+	http.Handle("/connection/websocket", authMiddleware(wsHandler))
 	log.Info().Msg("Starting server, visit http://localhost:8000")
 
 	return http.ListenAndServe(":8000", nil)

@@ -11,7 +11,7 @@ import (
 )
 
 type Wallet struct {
-	dto.GetWalletResponse
+	dto.WalletResponse
 	EncryptedSeed []byte // Encrypted BIP-39 mnemonic
 	EncryptedKey  []byte // Encrypted secp256k1 private key
 	NonceSeed     []byte // Nonce for seed encryption

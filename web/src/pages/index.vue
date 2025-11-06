@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useStore } from '@/stores/app'
+  import { useStore } from '@/store/app'
   import Overview from './overview.vue'
   import Splash from './splash.vue'
 

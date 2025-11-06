@@ -103,7 +103,7 @@ func Run(appName string, appFunc func() App) error {
 
 	// Initialize wallet manager
 	log.Debug().Msg("Initializing wallet manager")
-	walletManager, err := wallet.NewManager(db)
+	walletManager, err := wallet.NewManager()
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to initialize wallet manager")
 		return fmt.Errorf("failed to initialize wallet manager: %w", err)

@@ -6,7 +6,8 @@
 
 // Plugins
 import vuetify from './vuetify'
-import pinia from '../stores'
+import pinia from '../store'
+import { useStore } from '@/store/app'
 import router from '../router'
 import '../styles/style.scss'
 // Types
@@ -17,4 +18,10 @@ export function registerPlugins (app: App) {
     .use(vuetify)
     .use(router)
     .use(pinia)
+  
+  // connect to websocket server
+  const store = useStore()
+  if (!store.isAppInitialized) {
+    store.init()
+  }
 }

@@ -1,11 +1,16 @@
 package dto
 
-type GetWalletRequest struct {
+type WalletCountRequest struct{}
+type WalletCountResponse struct {
+	WalletCount int `json:"wallet_count"`
+}
+
+type WalletRequest struct {
 	WalletID   string `json:"wallet_id"`
 	WalletName string `json:"wallet_name"`
 }
 
-type GetWalletResponse struct {
+type WalletResponse struct {
 	ID        string             `json:"id"`
 	IsDefault bool               `json:"is_default"`
 	Name      string             `json:"name"`
@@ -14,13 +19,14 @@ type GetWalletResponse struct {
 	CreatedAt int64              `json:"created_at"`
 }
 
-type GetWalletsRequest struct{}
-type GetWalletsResponse struct {
-	Locked  bool                `json:"locked"`
-	Wallets []GetWalletResponse `json:"wallets"`
+type WalletsRequest struct{}
+type WalletsResponse struct {
+	Locked  bool             `json:"locked"`
+	Wallets []WalletResponse `json:"wallets"`
 }
 
 type UnlockWalletsRequest struct {
 	Password string `json:"password"`
 }
+
 type UnlockWalletsResponse struct{}

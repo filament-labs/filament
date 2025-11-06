@@ -11,12 +11,12 @@
       <Logo />
       <h1 class="title">Filament</h1>
       <p class="subtitle">Your Secure, Self-Custodial Filecoin Wallet</p>
-      <v-progress-circular
+      <!--<v-progress-circular
         color="white"
         indeterminate
         :size="80"
         width="2"
-      />
+      />-->
     </v-container>
   </div>
 </template>
