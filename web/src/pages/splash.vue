@@ -21,27 +21,47 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onMounted } from 'vue';
+  import { onMounted, nextTick } from 'vue';
   import { walletClient } from '@/api/client';
   import { useStore } from '@/store/app';
   
   const router = useRouter()
+  const route = useRoute()
   const store = useStore()
   const wallet = walletClient
 
   onMounted(async () => {
-    const res = await wallet.getWallets({})
-    const walletsCount = res.wallets.length
-    let location = "/wallet/intro"
-
-    if (walletsCount > 0) {
-      location = "/auth"
-    } else {
-      location = "/wallets/onboard"
-    }
-    store.initApp(res)
-    router.push(location)
+    await sleep(10000)
+    await initApp()
+    
   })
+
+  const initApp = async () => {
+    try {
+      await store.initApp()
+      
+
+      if (store.wallets.wallets.length === 0) {
+        await router.replace("/onboard" )
+      } else {
+        const redirect = typeof route.query.redirect === "string" ? route.query.redirect : undefined 
+        if (redirect) {
+          const resolved = router.resolve(redirect)
+          if (resolved.matched && resolved.matched.length > 0) {
+            await router.replace(redirect)
+            return
+          }
+        }
+        await router.replace("/overview")
+      }
+    } catch (err) {
+
+    }
+  }
+
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 </script>
 <style scoped>
 #splash-page {

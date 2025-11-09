@@ -1,16 +1,18 @@
+import { walletClient } from '@/api/client'
 import type { WalletsResponse } from '@/pb/wallet_pb'
 import type { IState } from '@/types/store'
 import { Centrifuge } from 'centrifuge'
 
 export type IActions = {
-  initApp(wallets: WalletsResponse): void
+  initApp(): void
   unlockWallet(): void
 } & ThisType<IState & IActions>
 
 const actions: IActions = {
-  initApp(wallets) {
+  async initApp() {
+    const wallet = walletClient
+    this.wallets = await wallet.getWallets({})
     this.appInitialized = true
-    this.wallets = wallets
   },
   unlockWallet () {
    

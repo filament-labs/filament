@@ -5,6 +5,7 @@
  */
 
 // Composables
+import { useStore } from '@/store/app'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
@@ -27,6 +28,23 @@ router.onError((err, to) => {
   } else {
     console.error(err)
   }
+})
+
+let firstLoad = true
+router.beforeEach(async (to, from, next) => {
+  if (to.name === "/splash") {
+    firstLoad = false 
+    next()
+    return
+  }
+
+  if (firstLoad) {
+    firstLoad = false 
+    next({ name: "/splash", query: { redirect: to.fullPath }})
+    return
+  }
+
+  next()
 })
 
 router.isReady().then(() => {
