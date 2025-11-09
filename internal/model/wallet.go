@@ -1,15 +1,6 @@
 package model
 
-import (
-	"crypto/ecdsa"
-	"fmt"
-
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/filament-labs/filament/internal/dto"
-	"github.com/filament-labs/filament/pkg/util"
-	"github.com/tyler-smith/go-bip39"
-)
-
+/**
 type Wallet struct {
 	dto.WalletResponse
 	EncryptedSeed []byte // Encrypted BIP-39 mnemonic
@@ -46,3 +37,4 @@ func (w *Wallet) GetMnemonic(masterKey []byte) (string, error) {
 
 	return mnemonic, nil
 }
+**/

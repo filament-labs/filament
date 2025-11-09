@@ -20,6 +20,29 @@
     </v-container>
   </div>
 </template>
+<script setup lang="ts">
+  import { onMounted } from 'vue';
+  import { walletClient } from '@/api/client';
+  import { useStore } from '@/store/app';
+  
+  const router = useRouter()
+  const store = useStore()
+  const wallet = walletClient
+
+  onMounted(async () => {
+    const res = await wallet.getWallets({})
+    const walletsCount = res.wallets.length
+    let location = "/wallet/intro"
+
+    if (walletsCount > 0) {
+      location = "/auth"
+    } else {
+      location = "/wallets/onboard"
+    }
+    store.initApp(res)
+    router.push(location)
+  })
+</script>
 <style scoped>
 #splash-page {
   background: linear-gradient(135deg, #00D4FF 0%, #0066FF 100%);

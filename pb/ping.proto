@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package ws;
+
+option go_package = "github.com/filament-labs/filament/internal/pb";
+
+service PingService {
+  rpc Ping(PingRequest) returns (PingResponse);
+} 
+
+message PingRequest {
+}
+
+message PingResponse {
+  int64 timestamp = 1;
+}

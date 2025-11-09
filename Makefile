@@ -5,8 +5,17 @@ WEB_DIR := web
 DESKTOP_BIN := $(BIN_DIR)/desktop
 WEB_BIN := $(BIN_DIR)/web-server
 
+PROTO_DIR := proto               # your .proto files location
+GO_OUT := internal/pb           # generated Go code
+TS_OUT := web/src/pb            # generated TS code
+
+# Plugins
+PROTOC_GEN_GO := $(shell which protoc-gen-go)
+PROTOC_GEN_GO_GRPC := $(shell which protoc-gen-go-grpc)
+PROTOC_GEN_TS := $(shell which protoc-gen-ts_proto)
+
 # Phony targets (not associated with files)
-.PHONY: all build-desktop build-web dev-desktop dev-web test docker-build clean
+.PHONY: all build-desktop build-web dev-desktop dev-web test docker-build clean proto
 
 # Default target
 all: build-desktop build-web
@@ -55,3 +64,22 @@ clean:
 	@if [ -d "$(FRONTEND_DIR)" ]; then \
 		cd $(FRONTEND_DIR) && pnpm clean || true; \
 	fi
+	rm -rf $(GO_OUT) $(TS_OUT)
+
+# Generate Go and TS protobuf files
+proto:
+	@echo "Generating Go protobuf files..."
+	# Recursively find all .proto files
+	protoc -I=$(PROTO_DIR) \
+		--go_out=. \
+		--go-grpc_out=. \
+		$(shell find $(PROTO_DIR) -name '*.proto')
+
+	@echo "Generating TypeScript protobuf files..."
+	@mkdir -p $(TS_OUT)
+	protoc -I=$(PROTO_DIR) \
+		--plugin=protoc-gen-ts_proto=$(PROTOC_GEN_TS) \
+		--ts_proto_out=$(TS_OUT) \
+		--ts_proto_opt=esModuleInterop=true,forceLong=long,useOptionals=messages \
+		$(shell find $(PROTO_DIR) -name '*.proto')
+

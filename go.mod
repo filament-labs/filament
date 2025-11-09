@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	connectrpc.com/cors v0.1.0 // indirect
 	github.com/FZambia/eagle v0.2.0 // indirect
 	github.com/GeertJohan/go.incremental v1.0.0 // indirect
 	github.com/GeertJohan/go.rice v1.0.3 // indirect
@@ -28,6 +29,7 @@ require (
 	github.com/benbjohnson/clock v1.3.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
+	github.com/bufbuild/connect-go v1.10.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/centrifugal/protocol v0.16.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -134,6 +136,7 @@ require (
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/raulk/clock v1.1.0 // indirect
 	github.com/redis/rueidis v1.0.64 // indirect
+	github.com/rs/cors v1.11.1 // indirect
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/segmentio/encoding v0.5.3 // indirect

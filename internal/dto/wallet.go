@@ -1,13 +1,9 @@
 package dto
 
-type WalletCountRequest struct{}
-type WalletCountResponse struct {
-	WalletCount int `json:"wallet_count"`
-}
+import "time"
 
 type WalletRequest struct {
-	WalletID   string `json:"wallet_id"`
-	WalletName string `json:"wallet_name"`
+	WalletID string `json:"wallet_id"`
 }
 
 type WalletResponse struct {
@@ -16,12 +12,13 @@ type WalletResponse struct {
 	Name      string             `json:"name"`
 	Addresses map[string]string  `json:"addresses"`
 	Balance   GetBalanceResponse `json:"balance"`
-	CreatedAt int64              `json:"created_at"`
+	CreatedAt time.Time          `json:"created_at"`
 }
 
 type WalletsRequest struct{}
 type WalletsResponse struct {
 	Locked  bool             `json:"locked"`
+	IsInit  bool             `json:"is_init"`
 	Wallets []WalletResponse `json:"wallets"`
 }
 

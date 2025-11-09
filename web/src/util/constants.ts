@@ -1,4 +1,1 @@
-export const CONSTANTS = {
-  STATUS_OPENING_DATABASE: 'Opening database',
-  STATUS_LOADING_WALLET: 'Loading wallet',
-}
+export const WS_EVENT_INIT = 'app:init'

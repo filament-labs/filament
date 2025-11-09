@@ -4,13 +4,14 @@ import actions, { type IActions } from './actions'
 import getters from './getters'
 import state from './state'
 
+export interface Store {
+  state: () => IState
+  actions: IActions
+  getters: typeof getters
+}
+
 export const useStore = defineStore('app', {
   state,
   actions,
   getters,
-} as {
-  state: () => IState
-  actions: IActions
-  getters: typeof getters
-  //getters: Record<string, any>
-})
+} as Store)

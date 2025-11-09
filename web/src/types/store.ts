@@ -1,6 +1,6 @@
-import type { Centrifuge } from 'centrifuge'
+import type { WalletsResponse } from '@/pb/wallet_pb'
 
 export interface IState {
   appInitialized: boolean
-  centrifuge: Centrifuge | null
+  wallets: WalletsResponse
 }

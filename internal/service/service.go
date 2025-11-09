@@ -6,8 +6,11 @@ import (
 )
 
 type Service struct {
+	Wallet WalletService
 }
 
 func New(repo *repository.Repository, walletManager *wallet.Manager) *Service {
-	return &Service{}
+	return &Service{
+		Wallet: NewWalletService(repo, walletManager),
+	}
 }

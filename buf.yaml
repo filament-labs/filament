@@ -1,0 +1,8 @@
+# buf.yaml
+version: v1
+name: buf.build/filament-labs/filament
+
+build:
+  excludes:
+    - internal
+    - web
