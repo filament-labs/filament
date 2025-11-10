@@ -8,15 +8,20 @@
 <template>
   <div id="splash-page" class="page fill-height">
     <v-container class="d-flex flex-column justify-center fill-height">
-      <Logo />
-      <h1 class="title">Filament</h1>
-      <p class="subtitle">Your Secure, Self-Custodial Filecoin Wallet</p>
-      <!--<v-progress-circular
-        color="white"
-        indeterminate
-        :size="80"
-        width="2"
-      />-->
+      <div class="d-flex flex-column justify-center align-center text-center">
+        <Logo />
+        <PageTitle  
+          title="Filament"
+          subtitle="Your Secure, Self-Custodial Filecoin Wallet"
+          class="title-white subtitle-white"
+        />
+        <v-progress-circular
+          color="white"
+          indeterminate
+          :size="40"
+          width="2"
+        />
+      </div>
     </v-container>
   </div>
 </template>
@@ -65,7 +70,7 @@
 </script>
 <style scoped>
 #splash-page {
-  background: linear-gradient(135deg, #00D4FF 0%, #0066FF 100%);
+  background: var(--v-primary-gradient);
 }
 
 .title {

@@ -20,6 +20,7 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/onboard/': RouteRecordInfo<'/onboard/', '/onboard', Record<never, never>, Record<never, never>>,
+    '/onboard/import': RouteRecordInfo<'/onboard/import', '/onboard/import', Record<never, never>, Record<never, never>>,
     '/overview': RouteRecordInfo<'/overview', '/overview', Record<never, never>, Record<never, never>>,
     '/splash': RouteRecordInfo<'/splash', '/splash', Record<never, never>, Record<never, never>>,
   }
@@ -41,6 +42,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/onboard/index.vue': {
       routes: '/onboard/'
+      views: never
+    }
+    'src/pages/onboard/import.vue': {
+      routes: '/onboard/import'
       views: never
     }
     'src/pages/overview.vue': {

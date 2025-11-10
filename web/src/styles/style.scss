@@ -1,0 +1,10 @@
+:root {
+  --v-primary-gradient: linear-gradient(135deg, #00D4FF 0%, #0066FF 100%);
+  --v-secondary-gradient: linear-gradient(135deg, rgb(0, 212, 255) 0%, rgb(0, 102, 255) 100%);
+  --v-card-gradient: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(0,102,255,0.1) 100%);
+}
+
+[data-theme="dark"] {
+  --v-primary-gradient: linear-gradient(135deg, rgb(0, 102, 255) 0%, rgb(0, 212, 255) 100%);
+  --v-card-gradient: linear-gradient(135deg, rgba(0,212,255,0.05) 0%, rgba(0,102,255,0.05) 100%);
+}
