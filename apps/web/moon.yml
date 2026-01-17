@@ -1,0 +1,17 @@
+language: 'javascript'
+type: 'application'
+
+tasks:
+  dev:
+    command: 'pnpm dev'
+    platform: 'system'
+    local: true
+
+    deps: 
+      - 'api:dev'
+
+  build:
+    command: 'vite build'
+    platform: 'system'
+    deps:
+      - 'api:build'

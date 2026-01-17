@@ -1,0 +1,11 @@
+# packages/proto/buf.work.yaml
+version: v1
+#name: buf.build/codemaestro/filament
+directories:
+  - src
+#breaking:
+#  use:
+#    - FILE
+#lint:
+#  use:
+#    - DEFAULT

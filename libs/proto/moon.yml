@@ -1,0 +1,25 @@
+# libs/proto/moon.yml
+language: 'other'
+type: 'library'
+
+tasks:
+  # Lints your .proto files
+  lint:
+    command: 'buf lint'
+    platform: 'system'
+    inputs:
+      - 'buf.yaml'
+      - '**/*.proto'
+
+  # Generates Go and TS/React code
+  generate:
+    command: 'buf generate'
+    platform: 'system'
+    inputs:
+      - 'buf.gen.yaml'
+      - 'buf.yaml'
+      - '**/*.proto'
+    outputs:
+      # Adjust these to where your buf.gen.yaml outputs files
+      - 'gen/go'
+      - 'gen/ts'

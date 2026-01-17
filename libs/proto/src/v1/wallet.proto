@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+import "v1/types.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package="github.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1";
+
+message GetWalletRequest {
+  int64 wallet_id = 1;
+}
+
+message GetWalletResponse {
+  int64 wallet_id = 1;
+  bool is_default = 2;
+  string name = 3;
+  map<string, string> addresses = 4;
+  Amount balance = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message GetWalletsRequest {
+  Wallet wallet = 1;
+} 
+
+message GetWalletsResponse{
+  repeated Wallet wallets = 1;
+}
+
+message CreateWalletRequest {
+  string name = 1;
+  string password = 2;
+  string confirm_password = 3; 
+}
+
+message CreateWalletResponse {
+  int64 id = 1;              
+  string seed_phrase = 2;
+  map<string, string> addresses = 3;
+}
+
+message RecoverWalletRequest {
+  string wallet_name = 1;
+  string seed_phrase = 2;
+  string password = 3;
+  string confirm_password = 4;
+}
+
+message RecoverWalletResponse {
+  int64 wallet_id = 1;
+}
+
+message UpdateWalletRequest {
+  int64 wallet_id = 1; 
+}
+
+message UpdateWalletResponse {
+  Wallet wallet = 1;
+}
+
+message DeleteWalletRequest {
+  int64 wallet_id = 1;
+  string password = 2;
+}
+
+message DeleteWalletResponse{}
+
+message UnlockWalletsRequest {
+  string password = 1;
+}
+
+message UnlockWalletsResponse{}
+
+// The primary service interface for managing the user's wallet portfolio.
+service WalletService {
+  // Retrieves the detailed information for a single wallet.
+  rpc GetWallet(GetWalletRequest) returns (GetWalletResponse);
+
+  // Retrieves a list of all wallets belonging to the user.
+  rpc GetWallets(GetWalletsRequest) returns (GetWalletsResponse);
+
+  // Creates a new cryptographic wallet and saves its metadata.
+  rpc CreateWallet(CreateWalletRequest) returns (CreateWalletResponse);
+  
+  rpc RecoverWallet(RecoverWalletRequest) returns (RecoverWalletResponse);
+
+  // Updates mutable metadata associated with a wallet (name, default status).
+  rpc UpdateWallet(UpdateWalletRequest) returns (UpdateWalletResponse);
+
+  // Permanently deletes or archives a wallet record.
+  rpc DeleteWallet(DeleteWalletRequest) returns (DeleteWalletResponse);
+
+  rpc UnlockWallets(UnlockWalletsRequest) returns (UnlockWalletsResponse);
+}

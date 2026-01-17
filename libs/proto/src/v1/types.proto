@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package="github.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1";
+
+enum AddressType {
+  ADDRESS_TYPE_F1 = 0;
+  ADDRESS_TYPE_F4 = 1;
+  ADDRESS_TYPE_0X = 2;
+}
+
+message Address {
+  AddressType type = 1;
+  string value = 2;
+}
+
+message Amount {
+  string value = 1;
+  string ticker = 2;
+  uint32 decimals = 3;
+}
+
+message Wallet {
+  int64 wallet_id = 1;
+  bool is_default = 2;
+  string name = 3;
+  repeated Address addresses = 4;
+  Amount balance = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+
+enum TransactionActionType {
+  TRANSACTION_TYPE_UNKNOWN = 0;
+  TRANSACTION_TYPE_SEND = 1;
+  TRANSACTION_TYPE_RECEIVE = 2;
+  TRANSACTION_TYPE_FEE = 3;
+  TRANSACTION_TYPE_INTERNAL = 4;
+}
+
+message TransactionType {
+  TransactionActionType type = 1;
+  string value = 2;
+}
+
+enum TransactionStatusType {
+  TRANSACTION_STATUS_UNKNOWN = 0;
+  TRANSACTION_STATUS_PENDING = 1;
+  TRANSACTION_STATUS_CONFIRMED = 2;
+  TRANSACTION_STATUS_FAILED = 3;
+  TRANSACTION_STATUS_CANCELED = 4;
+}
+
+message TransactionStatus {
+  TransactionStatusType type = 1;
+  string message = 2;          // Error details if FAILED
+  uint64 confirmations = 3;    // Current confirmation count
+  uint64 block_height = 4;     // The height it was included in
+}
+
+message Transaction {
+  string id = 1;
+  TransactionType type = 2;
+  TransactionStatus status = 3;
+  Amount amount = 4;
+  Address source_address = 5;
+  Address destination_address = 6;
+  Amount fee = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp confirmed_t = 9;
+}
