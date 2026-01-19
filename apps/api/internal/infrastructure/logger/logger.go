@@ -11,10 +11,14 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func New(cfg config.LogConfig, env config.Env, dataDir string) {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+func init() {
+	zerolog.TimeFieldFormat = "15:04:05"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
+}
+
+func New(cfg config.LogConfig, env config.Env, dataDir string) {
 	if env == config.Development {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
 		return

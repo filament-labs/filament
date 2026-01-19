@@ -23,3 +23,7 @@ func (e Env) Validate() error {
 		return fmt.Errorf("invalid environment: %s", e)
 	}
 }
+
+func (e Env) String() string {
+	return string(e)
+}

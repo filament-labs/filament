@@ -30,6 +30,8 @@ func Run(env config.Env) error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
+	log.Info().Str("env", env.String()).Msg("bootstrap app")
+
 	// Load Configuration
 	log.Info().Msg("loading config...")
 	cfg, err := config.Load(env)
@@ -76,7 +78,6 @@ func Run(env config.Env) error {
 		srvr,
 	}
 
-	log.Info().Msg("starting components...")
 	return runWithGracefulShutdown(ctx, 20*time.Second, components)
 }
 
