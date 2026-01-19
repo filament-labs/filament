@@ -661,7 +661,7 @@ const file_v1_types_proto_rawDesc = "" +
 	"\x1aTRANSACTION_STATUS_PENDING\x10\x01\x12 \n" +
 	"\x1cTRANSACTION_STATUS_CONFIRMED\x10\x02\x12\x1d\n" +
 	"\x19TRANSACTION_STATUS_FAILED\x10\x03\x12\x1f\n" +
-	"\x1bTRANSACTION_STATUS_CANCELED\x10\x04BHZFgithub.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1b\x06proto3"
+	"\x1bTRANSACTION_STATUS_CANCELED\x10\x04B=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_types_proto_rawDescOnce sync.Once

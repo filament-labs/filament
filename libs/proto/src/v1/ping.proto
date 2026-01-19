@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package wallet.v1;
 
-option go_package="github.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1";
+option go_package="github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1";
 
 message PingRequest {}
 

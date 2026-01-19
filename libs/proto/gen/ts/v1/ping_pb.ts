@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file v1/ping.proto.
  */
 export const file_v1_ping: GenFile = /*@__PURE__*/
-  fileDesc("Cg12MS9waW5nLnByb3RvEgl3YWxsZXQudjEiDQoLUGluZ1JlcXVlc3QiNAoMUGluZ1Jlc3BvbnNlEgoKAm9rGAEgASgIEhgKEHNlcnZlcl90aW1lX3VuaXgYAiABKAMyRgoLUGluZ1NlcnZpY2USNwoEUGluZxIWLndhbGxldC52MS5QaW5nUmVxdWVzdBoXLndhbGxldC52MS5QaW5nUmVzcG9uc2VCSFpGZ2l0aHViLmNvbS9jb2RlbWFlc3RybzY0L2ZpbGFtZW50L3BhY2thZ2VzL3Byb3RvL2dlbi9nby93YWxsZXQvdjE7cGJ2MWIGcHJvdG8z");
+  fileDesc("Cg12MS9waW5nLnByb3RvEgl3YWxsZXQudjEiDQoLUGluZ1JlcXVlc3QiNAoMUGluZ1Jlc3BvbnNlEgoKAm9rGAEgASgIEhgKEHNlcnZlcl90aW1lX3VuaXgYAiABKAMyRgoLUGluZ1NlcnZpY2USNwoEUGluZxIWLndhbGxldC52MS5QaW5nUmVxdWVzdBoXLndhbGxldC52MS5QaW5nUmVzcG9uc2VCPVo7Z2l0aHViLmNvbS9jb2RlbWFlc3RybzY0L2ZpbGFtZW50L2xpYnMvcHJvdG8vZ2VuL2dvL3YxO3BidjFiBnByb3RvMw");
 
 /**
  * @generated from message wallet.v1.PingRequest

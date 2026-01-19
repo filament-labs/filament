@@ -4,7 +4,7 @@ package wallet.v1;
 
 import "v1/types.proto";
 
-option go_package="github.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1";
+option go_package="github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1";
 
 message SendTransactionRequest {
   int64 source_wallet_id = 1;

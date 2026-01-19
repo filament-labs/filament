@@ -203,7 +203,7 @@ const file_v1_errors_proto_rawDesc = "" +
 	"\x04NONE\x10\x00\x12\r\n" +
 	"\tNOT_FOUND\x10\x01\x12\x15\n" +
 	"\x11VALIDATION_FAILED\x10\x02\x12\x16\n" +
-	"\x12INSUFFICIENT_FUNDS\x10\x03BHZFgithub.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1b\x06proto3"
+	"\x12INSUFFICIENT_FUNDS\x10\x03B=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_errors_proto_rawDescOnce sync.Once

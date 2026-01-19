@@ -470,7 +470,7 @@ const file_v1_transaction_proto_rawDesc = "" +
 	"\x0fSendTransaction\x12!.wallet.v1.SendTransactionRequest\x1a\".wallet.v1.SendTransactionResponse\x12U\n" +
 	"\x0eGetTransaction\x12 .wallet.v1.GetTransactionRequest\x1a!.wallet.v1.GetTransactionResponse\x12[\n" +
 	"\x10ListTransactions\x12\".wallet.v1.ListTransactionsRequest\x1a#.wallet.v1.ListTransactionsResponse\x12i\n" +
-	"\x18StreamWalletTransactions\x12$.wallet.v1.StreamTransactionsRequest\x1a%.wallet.v1.StreamTransactionsResponse0\x01BHZFgithub.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1b\x06proto3"
+	"\x18StreamWalletTransactions\x12$.wallet.v1.StreamTransactionsRequest\x1a%.wallet.v1.StreamTransactionsResponse0\x01B=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_transaction_proto_rawDescOnce sync.Once

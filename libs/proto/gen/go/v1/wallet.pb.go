@@ -789,7 +789,7 @@ const file_v1_wallet_proto_rawDesc = "" +
 	"\rRecoverWallet\x12\x1f.wallet.v1.RecoverWalletRequest\x1a .wallet.v1.RecoverWalletResponse\x12O\n" +
 	"\fUpdateWallet\x12\x1e.wallet.v1.UpdateWalletRequest\x1a\x1f.wallet.v1.UpdateWalletResponse\x12O\n" +
 	"\fDeleteWallet\x12\x1e.wallet.v1.DeleteWalletRequest\x1a\x1f.wallet.v1.DeleteWalletResponse\x12R\n" +
-	"\rUnlockWallets\x12\x1f.wallet.v1.UnlockWalletsRequest\x1a .wallet.v1.UnlockWalletsResponseBHZFgithub.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1b\x06proto3"
+	"\rUnlockWallets\x12\x1f.wallet.v1.UnlockWalletsRequest\x1a .wallet.v1.UnlockWalletsResponseB=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_wallet_proto_rawDescOnce sync.Once

@@ -119,7 +119,7 @@ const file_v1_ping_proto_rawDesc = "" +
 	"\x02ok\x18\x01 \x01(\bR\x02ok\x12(\n" +
 	"\x10server_time_unix\x18\x02 \x01(\x03R\x0eserverTimeUnix2F\n" +
 	"\vPingService\x127\n" +
-	"\x04Ping\x12\x16.wallet.v1.PingRequest\x1a\x17.wallet.v1.PingResponseBHZFgithub.com/codemaestro64/filament/packages/proto/gen/go/wallet/v1;pbv1b\x06proto3"
+	"\x04Ping\x12\x16.wallet.v1.PingRequest\x1a\x17.wallet.v1.PingResponseB=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_ping_proto_rawDescOnce sync.Once

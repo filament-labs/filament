@@ -1,15 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"log"
+
+	"github.com/codemaestro64/filament/apps/api/internal/app"
+	"github.com/codemaestro64/filament/apps/api/internal/config"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	ticker := time.NewTicker(time.Second * 1)
-	defer ticker.Stop()
+var Environment = config.Development
 
-	for range ticker.C {
-		fmt.Println("ssss")
+func main() {
+	Execute()
+}
+
+func run(cmd *cobra.Command, args []string) {
+	if err := app.Run(Environment); err != nil {
+		log.Fatal(err)
 	}
 }
