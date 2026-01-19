@@ -4,18 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/codemaestro64/filament/apps/api/internal/database/orm"
-	"github.com/codemaestro64/filament/apps/api/internal/database/orm/wallet"
+	"github.com/codemaestro64/filament/apps/api/internal/infra/database/orm"
+	dbwallet "github.com/codemaestro64/filament/apps/api/internal/infra/database/orm/wallet"
 	"github.com/codemaestro64/filament/libs/filwallet"
-	pbv1 "github.com/codemaestro64/filament/libs/proto/gen/go/v1"
+	"github.com/codemaestro64/filament/libs/filwallet/address"
+	"github.com/codemaestro64/filament/libs/filwallet/wallet"
 )
 
 type WalletRepo interface {
 	CountWallets(ctx context.Context) (int, error)
-	FindWallet(ctx context.Context, walletID int) (*filwallet.Wallet, error)
-	GetWallets(ctx context.Context) ([]*filwallet.Wallet, error)
+	FindWallet(ctx context.Context, walletID int) (*wallet.Wallet, error)
+	GetWallets(ctx context.Context) ([]*wallet.Wallet, error)
 	DeleteWallet(ctx context.Context, walletID int) error
-	SaveWallet(ctx context.Context, saveParams filwallet.SaveWalletParams) (*filwallet.Wallet, error)
+	SaveWallet(ctx context.Context, saveParams filwallet.SaveWalletParams) (*wallet.Wallet, error)
 }
 
 type walletRepo struct {
@@ -37,9 +38,9 @@ func (r *walletRepo) CountWallets(ctx context.Context) (int, error) {
 	return count, nil
 }
 
-func (r *walletRepo) FindWallet(ctx context.Context, walletID int) (*filwallet.Wallet, error) {
-	wallet, err := r.db.Wallet.Query().
-		Where(wallet.ID(walletID)).
+func (r *walletRepo) FindWallet(ctx context.Context, walletID int) (*wallet.Wallet, error) {
+	dbWallet, err := r.db.Wallet.Query().
+		Where(dbwallet.IDEQ(walletID)).
 		WithAddresses().
 		First(ctx)
 
@@ -47,17 +48,17 @@ func (r *walletRepo) FindWallet(ctx context.Context, walletID int) (*filwallet.W
 		return nil, fmt.Errorf("db: find wallet by ID: %w", err)
 	}
 
-	wal := &filwallet.Wallet{
-		IsDefault:        wallet.IsDefault,
-		Name:             wallet.Name,
-		EncryptedSeed:    wallet.EncryptedSeed,
-		Salt:             wallet.Salt,
-		EncryptedKeyJSON: wallet.EncryptedKeyJSON,
-		CreatedAt:        wallet.CreatedAt,
+	wal := &wallet.Wallet{
+		IsDefault:         dbWallet.IsDefault,
+		Name:              dbWallet.Name,
+		EncryptedMnemonic: dbWallet.EncryptedSeed,
+		Salt:              dbWallet.Salt,
+		EncryptedKeyJSON:  dbWallet.EncryptedKeyJSON,
+		CreatedAt:         dbWallet.CreatedAt,
 	}
 
-	for _, addr := range wallet.Edges.Addresses {
-		wal.Addresses = append(wal.Addresses, &pbv1.Address{
+	for _, addr := range dbWallet.Edges.Addresses {
+		wal.Addresses = append(wal.Addresses, address.Address{
 			Type:  addr.Type,
 			Value: addr.Address,
 		})
@@ -66,7 +67,7 @@ func (r *walletRepo) FindWallet(ctx context.Context, walletID int) (*filwallet.W
 	return wal, nil
 }
 
-func (r *walletRepo) GetWallets(ctx context.Context) ([]*filwallet.Wallet, error) {
+func (r *walletRepo) GetWallets(ctx context.Context) ([]*wallet.Wallet, error) {
 	return nil, nil
 }
 
@@ -79,16 +80,6 @@ func (r *walletRepo) DeleteWallet(ctx context.Context, walletID int) error {
 	return nil
 }
 
-func (r *walletRepo) SaveWallet(ctx context.Context, saveParams filwallet.SaveWalletParams) (*filwallet.Wallet, error) {
+func (r *walletRepo) SaveWallet(ctx context.Context, saveParams filwallet.SaveWalletParams) (*wallet.Wallet, error) {
 	return nil, nil
-}
-
-func toAddressProto(addr *orm.Address) *pbv1.Address {
-	if addr == nil {
-		return nil
-	}
-	return &pbv1.Address{
-		Type:  addr.Type,
-		Value: addr.Address,
-	}
 }

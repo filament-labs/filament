@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/codemaestro64/filament/apps/api/internal/database/orm"
+	"github.com/codemaestro64/filament/apps/api/internal/infra/database/orm"
 )
 
 type SettingRepo interface {

@@ -28,7 +28,7 @@ func newUserService(repo *repository.Repository, walletMgr *filwallet.Manager) U
 }
 
 func (s *userService) GetBootstrap(ctx context.Context, req domain.GetBootstrapRequest) (*domain.GetBootstrapResponse, error) {
-	walletCount, err := s.walletMgr.WalletCount(ctx)
+	walletCount, err := s.walletMgr.WalletsCount(ctx)
 	if err != nil {
 		log.Error().Err(err).Msg("error fetching wallet count")
 		return nil, domain.ErrInternalServer
@@ -36,8 +36,8 @@ func (s *userService) GetBootstrap(ctx context.Context, req domain.GetBootstrapR
 
 	resp := &domain.GetBootstrapResponse{
 		WalletCount: walletCount,
-		Settings: domain.Settings{
-			Network: s.walletMgr.GetNetwork(),
+		Settings:    domain.Settings{
+			//Network: s.walletMgr.GetNetwork(),
 		},
 	}
 

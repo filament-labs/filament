@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	"github.com/codemaestro64/filament/apps/api/internal/config"
-	"github.com/codemaestro64/filament/apps/api/internal/database/orm"
+	"github.com/codemaestro64/filament/apps/api/internal/infra/database/orm"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
