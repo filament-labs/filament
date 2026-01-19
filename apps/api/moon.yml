@@ -2,6 +2,14 @@ language: 'go'
 type: 'application'
 
 tasks:
+  generate:
+    command: 'go generate ./...'
+    platform: 'system'
+    inputs:
+      - 'internal/infra/database/schema/*.go'
+    outputs:
+      - 'internal/infra/database/orm'
+
   dev:
     command: 'go run cmd/server/**'
     platform: 'system'

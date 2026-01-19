@@ -6,10 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/codemaestro64/filament/apps/api/internal/database/orm/address"
 	"github.com/codemaestro64/filament/apps/api/internal/database/orm/predicate"
 	"github.com/codemaestro64/filament/apps/api/internal/database/orm/wallet"
 )
@@ -27,9 +29,133 @@ func (_u *WalletUpdate) Where(ps ...predicate.Wallet) *WalletUpdate {
 	return _u
 }
 
+// SetIsDefault sets the "is_default" field.
+func (_u *WalletUpdate) SetIsDefault(v bool) *WalletUpdate {
+	_u.mutation.SetIsDefault(v)
+	return _u
+}
+
+// SetNillableIsDefault sets the "is_default" field if the given value is not nil.
+func (_u *WalletUpdate) SetNillableIsDefault(v *bool) *WalletUpdate {
+	if v != nil {
+		_u.SetIsDefault(*v)
+	}
+	return _u
+}
+
+// SetActorID sets the "actor_id" field.
+func (_u *WalletUpdate) SetActorID(v string) *WalletUpdate {
+	_u.mutation.SetActorID(v)
+	return _u
+}
+
+// SetNillableActorID sets the "actor_id" field if the given value is not nil.
+func (_u *WalletUpdate) SetNillableActorID(v *string) *WalletUpdate {
+	if v != nil {
+		_u.SetActorID(*v)
+	}
+	return _u
+}
+
+// SetName sets the "name" field.
+func (_u *WalletUpdate) SetName(v string) *WalletUpdate {
+	_u.mutation.SetName(v)
+	return _u
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *WalletUpdate) SetNillableName(v *string) *WalletUpdate {
+	if v != nil {
+		_u.SetName(*v)
+	}
+	return _u
+}
+
+// SetEncryptedSeed sets the "encrypted_seed" field.
+func (_u *WalletUpdate) SetEncryptedSeed(v []byte) *WalletUpdate {
+	_u.mutation.SetEncryptedSeed(v)
+	return _u
+}
+
+// SetEncryptedKeyJSON sets the "encrypted_key_json" field.
+func (_u *WalletUpdate) SetEncryptedKeyJSON(v []byte) *WalletUpdate {
+	_u.mutation.SetEncryptedKeyJSON(v)
+	return _u
+}
+
+// SetSalt sets the "salt" field.
+func (_u *WalletUpdate) SetSalt(v []byte) *WalletUpdate {
+	_u.mutation.SetSalt(v)
+	return _u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (_u *WalletUpdate) SetCreatedAt(v time.Time) *WalletUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_u *WalletUpdate) SetNillableCreatedAt(v *time.Time) *WalletUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
+	}
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *WalletUpdate) SetUpdatedAt(v time.Time) *WalletUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_u *WalletUpdate) SetNillableUpdatedAt(v *time.Time) *WalletUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
+	}
+	return _u
+}
+
+// AddAddressIDs adds the "addresses" edge to the Address entity by IDs.
+func (_u *WalletUpdate) AddAddressIDs(ids ...int) *WalletUpdate {
+	_u.mutation.AddAddressIDs(ids...)
+	return _u
+}
+
+// AddAddresses adds the "addresses" edges to the Address entity.
+func (_u *WalletUpdate) AddAddresses(v ...*Address) *WalletUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAddressIDs(ids...)
+}
+
 // Mutation returns the WalletMutation object of the builder.
 func (_u *WalletUpdate) Mutation() *WalletMutation {
 	return _u.mutation
+}
+
+// ClearAddresses clears all "addresses" edges to the Address entity.
+func (_u *WalletUpdate) ClearAddresses() *WalletUpdate {
+	_u.mutation.ClearAddresses()
+	return _u
+}
+
+// RemoveAddressIDs removes the "addresses" edge to Address entities by IDs.
+func (_u *WalletUpdate) RemoveAddressIDs(ids ...int) *WalletUpdate {
+	_u.mutation.RemoveAddressIDs(ids...)
+	return _u
+}
+
+// RemoveAddresses removes "addresses" edges to Address entities.
+func (_u *WalletUpdate) RemoveAddresses(v ...*Address) *WalletUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAddressIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -59,7 +185,35 @@ func (_u *WalletUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *WalletUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := wallet.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`orm: validator failed for field "Wallet.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.EncryptedSeed(); ok {
+		if err := wallet.EncryptedSeedValidator(v); err != nil {
+			return &ValidationError{Name: "encrypted_seed", err: fmt.Errorf(`orm: validator failed for field "Wallet.encrypted_seed": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.EncryptedKeyJSON(); ok {
+		if err := wallet.EncryptedKeyJSONValidator(v); err != nil {
+			return &ValidationError{Name: "encrypted_key_json", err: fmt.Errorf(`orm: validator failed for field "Wallet.encrypted_key_json": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Salt(); ok {
+		if err := wallet.SaltValidator(v); err != nil {
+			return &ValidationError{Name: "salt", err: fmt.Errorf(`orm: validator failed for field "Wallet.salt": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *WalletUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(wallet.Table, wallet.Columns, sqlgraph.NewFieldSpec(wallet.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -67,6 +221,75 @@ func (_u *WalletUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.IsDefault(); ok {
+		_spec.SetField(wallet.FieldIsDefault, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ActorID(); ok {
+		_spec.SetField(wallet.FieldActorID, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(wallet.FieldName, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.EncryptedSeed(); ok {
+		_spec.SetField(wallet.FieldEncryptedSeed, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.EncryptedKeyJSON(); ok {
+		_spec.SetField(wallet.FieldEncryptedKeyJSON, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.Salt(); ok {
+		_spec.SetField(wallet.FieldSalt, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.CreatedAt(); ok {
+		_spec.SetField(wallet.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(wallet.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.AddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedAddressesIDs(); len(nodes) > 0 && !_u.mutation.AddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AddressesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -88,9 +311,133 @@ type WalletUpdateOne struct {
 	mutation *WalletMutation
 }
 
+// SetIsDefault sets the "is_default" field.
+func (_u *WalletUpdateOne) SetIsDefault(v bool) *WalletUpdateOne {
+	_u.mutation.SetIsDefault(v)
+	return _u
+}
+
+// SetNillableIsDefault sets the "is_default" field if the given value is not nil.
+func (_u *WalletUpdateOne) SetNillableIsDefault(v *bool) *WalletUpdateOne {
+	if v != nil {
+		_u.SetIsDefault(*v)
+	}
+	return _u
+}
+
+// SetActorID sets the "actor_id" field.
+func (_u *WalletUpdateOne) SetActorID(v string) *WalletUpdateOne {
+	_u.mutation.SetActorID(v)
+	return _u
+}
+
+// SetNillableActorID sets the "actor_id" field if the given value is not nil.
+func (_u *WalletUpdateOne) SetNillableActorID(v *string) *WalletUpdateOne {
+	if v != nil {
+		_u.SetActorID(*v)
+	}
+	return _u
+}
+
+// SetName sets the "name" field.
+func (_u *WalletUpdateOne) SetName(v string) *WalletUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *WalletUpdateOne) SetNillableName(v *string) *WalletUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
+	}
+	return _u
+}
+
+// SetEncryptedSeed sets the "encrypted_seed" field.
+func (_u *WalletUpdateOne) SetEncryptedSeed(v []byte) *WalletUpdateOne {
+	_u.mutation.SetEncryptedSeed(v)
+	return _u
+}
+
+// SetEncryptedKeyJSON sets the "encrypted_key_json" field.
+func (_u *WalletUpdateOne) SetEncryptedKeyJSON(v []byte) *WalletUpdateOne {
+	_u.mutation.SetEncryptedKeyJSON(v)
+	return _u
+}
+
+// SetSalt sets the "salt" field.
+func (_u *WalletUpdateOne) SetSalt(v []byte) *WalletUpdateOne {
+	_u.mutation.SetSalt(v)
+	return _u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (_u *WalletUpdateOne) SetCreatedAt(v time.Time) *WalletUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_u *WalletUpdateOne) SetNillableCreatedAt(v *time.Time) *WalletUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
+	}
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *WalletUpdateOne) SetUpdatedAt(v time.Time) *WalletUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_u *WalletUpdateOne) SetNillableUpdatedAt(v *time.Time) *WalletUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
+	}
+	return _u
+}
+
+// AddAddressIDs adds the "addresses" edge to the Address entity by IDs.
+func (_u *WalletUpdateOne) AddAddressIDs(ids ...int) *WalletUpdateOne {
+	_u.mutation.AddAddressIDs(ids...)
+	return _u
+}
+
+// AddAddresses adds the "addresses" edges to the Address entity.
+func (_u *WalletUpdateOne) AddAddresses(v ...*Address) *WalletUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAddressIDs(ids...)
+}
+
 // Mutation returns the WalletMutation object of the builder.
 func (_u *WalletUpdateOne) Mutation() *WalletMutation {
 	return _u.mutation
+}
+
+// ClearAddresses clears all "addresses" edges to the Address entity.
+func (_u *WalletUpdateOne) ClearAddresses() *WalletUpdateOne {
+	_u.mutation.ClearAddresses()
+	return _u
+}
+
+// RemoveAddressIDs removes the "addresses" edge to Address entities by IDs.
+func (_u *WalletUpdateOne) RemoveAddressIDs(ids ...int) *WalletUpdateOne {
+	_u.mutation.RemoveAddressIDs(ids...)
+	return _u
+}
+
+// RemoveAddresses removes "addresses" edges to Address entities.
+func (_u *WalletUpdateOne) RemoveAddresses(v ...*Address) *WalletUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAddressIDs(ids...)
 }
 
 // Where appends a list predicates to the WalletUpdate builder.
@@ -133,7 +480,35 @@ func (_u *WalletUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *WalletUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := wallet.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`orm: validator failed for field "Wallet.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.EncryptedSeed(); ok {
+		if err := wallet.EncryptedSeedValidator(v); err != nil {
+			return &ValidationError{Name: "encrypted_seed", err: fmt.Errorf(`orm: validator failed for field "Wallet.encrypted_seed": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.EncryptedKeyJSON(); ok {
+		if err := wallet.EncryptedKeyJSONValidator(v); err != nil {
+			return &ValidationError{Name: "encrypted_key_json", err: fmt.Errorf(`orm: validator failed for field "Wallet.encrypted_key_json": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Salt(); ok {
+		if err := wallet.SaltValidator(v); err != nil {
+			return &ValidationError{Name: "salt", err: fmt.Errorf(`orm: validator failed for field "Wallet.salt": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(wallet.Table, wallet.Columns, sqlgraph.NewFieldSpec(wallet.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -158,6 +533,75 @@ func (_u *WalletUpdateOne) sqlSave(ctx context.Context) (_node *Wallet, err erro
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.IsDefault(); ok {
+		_spec.SetField(wallet.FieldIsDefault, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ActorID(); ok {
+		_spec.SetField(wallet.FieldActorID, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(wallet.FieldName, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.EncryptedSeed(); ok {
+		_spec.SetField(wallet.FieldEncryptedSeed, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.EncryptedKeyJSON(); ok {
+		_spec.SetField(wallet.FieldEncryptedKeyJSON, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.Salt(); ok {
+		_spec.SetField(wallet.FieldSalt, field.TypeBytes, value)
+	}
+	if value, ok := _u.mutation.CreatedAt(); ok {
+		_spec.SetField(wallet.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(wallet.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.AddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedAddressesIDs(); len(nodes) > 0 && !_u.mutation.AddressesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AddressesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   wallet.AddressesTable,
+			Columns: []string{wallet.AddressesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(address.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Wallet{config: _u.config}
 	_spec.Assign = _node.assignValues

@@ -5,6 +5,7 @@ package orm
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -13,10 +14,47 @@ import (
 
 // Wallet is the model entity for the Wallet schema.
 type Wallet struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
-	ID           int `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// IsDefault holds the value of the "is_default" field.
+	IsDefault bool `json:"is_default,omitempty"`
+	// ActorID holds the value of the "actor_id" field.
+	ActorID *string `json:"actor_id,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
+	// EncryptedSeed holds the value of the "encrypted_seed" field.
+	EncryptedSeed []byte `json:"-"`
+	// EncryptedKeyJSON holds the value of the "encrypted_key_json" field.
+	EncryptedKeyJSON []byte `json:"-"`
+	// Salt holds the value of the "salt" field.
+	Salt []byte `json:"-"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the WalletQuery when eager-loading is set.
+	Edges        WalletEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// WalletEdges holds the relations/edges for other nodes in the graph.
+type WalletEdges struct {
+	// Addresses holds the value of the addresses edge.
+	Addresses []*Address `json:"addresses,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// AddressesOrErr returns the Addresses value or an error if the edge
+// was not loaded in eager-loading.
+func (e WalletEdges) AddressesOrErr() ([]*Address, error) {
+	if e.loadedTypes[0] {
+		return e.Addresses, nil
+	}
+	return nil, &NotLoadedError{edge: "addresses"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,8 +62,16 @@ func (*Wallet) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case wallet.FieldEncryptedSeed, wallet.FieldEncryptedKeyJSON, wallet.FieldSalt:
+			values[i] = new([]byte)
+		case wallet.FieldIsDefault:
+			values[i] = new(sql.NullBool)
 		case wallet.FieldID:
 			values[i] = new(sql.NullInt64)
+		case wallet.FieldActorID, wallet.FieldName:
+			values[i] = new(sql.NullString)
+		case wallet.FieldCreatedAt, wallet.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -47,6 +93,56 @@ func (_m *Wallet) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case wallet.FieldIsDefault:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_default", values[i])
+			} else if value.Valid {
+				_m.IsDefault = value.Bool
+			}
+		case wallet.FieldActorID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field actor_id", values[i])
+			} else if value.Valid {
+				_m.ActorID = new(string)
+				*_m.ActorID = value.String
+			}
+		case wallet.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				_m.Name = value.String
+			}
+		case wallet.FieldEncryptedSeed:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field encrypted_seed", values[i])
+			} else if value != nil {
+				_m.EncryptedSeed = *value
+			}
+		case wallet.FieldEncryptedKeyJSON:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field encrypted_key_json", values[i])
+			} else if value != nil {
+				_m.EncryptedKeyJSON = *value
+			}
+		case wallet.FieldSalt:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field salt", values[i])
+			} else if value != nil {
+				_m.Salt = *value
+			}
+		case wallet.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case wallet.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = new(time.Time)
+				*_m.UpdatedAt = value.Time
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -58,6 +154,11 @@ func (_m *Wallet) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Wallet) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryAddresses queries the "addresses" edge of the Wallet entity.
+func (_m *Wallet) QueryAddresses() *AddressQuery {
+	return NewWalletClient(_m.config).QueryAddresses(_m)
 }
 
 // Update returns a builder for updating this Wallet.
@@ -82,7 +183,31 @@ func (_m *Wallet) Unwrap() *Wallet {
 func (_m *Wallet) String() string {
 	var builder strings.Builder
 	builder.WriteString("Wallet(")
-	builder.WriteString(fmt.Sprintf("id=%v", _m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("is_default=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsDefault))
+	builder.WriteString(", ")
+	if v := _m.ActorID; v != nil {
+		builder.WriteString("actor_id=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("name=")
+	builder.WriteString(_m.Name)
+	builder.WriteString(", ")
+	builder.WriteString("encrypted_seed=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("encrypted_key_json=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("salt=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	if v := _m.UpdatedAt; v != nil {
+		builder.WriteString("updated_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

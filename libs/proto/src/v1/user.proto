@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+import "v1/types.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package="github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1";
+
+message GetBootstrapRequest {}
+message GetBootstrapResponse {
+  Settings settings = 1;
+  int64 wallet_count = 2;
+  bool wallets_locked = 3;
+}
+
+service UserService {
+  rpc Bootstrap(GetBootstrapRequest) returns (GetBootstrapResponse);
+}

@@ -8,7 +8,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/bufbuild/connect-go"
 	"github.com/codemaestro64/filament/apps/api/internal/config"
+	"github.com/codemaestro64/filament/apps/api/internal/server/handler"
+	"github.com/codemaestro64/filament/apps/api/internal/server/interceptors"
 	"github.com/codemaestro64/filament/apps/api/internal/service"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/http2"
@@ -21,7 +24,7 @@ type Server struct {
 	cancelApp  context.CancelFunc
 }
 
-func New(cfg config.ServerConfig, srvc *service.Service, cancelApp context.CancelFunc) (*Server, error) {
+func New(srvc *service.Service, cfg config.ServerConfig, cancelApp context.CancelFunc) (*Server, error) {
 	mux := http.NewServeMux()
 
 	registerHandlers(mux, srvc)
@@ -54,7 +57,7 @@ func (s *Server) Start(ctx context.Context) error {
 		return fmt.Errorf("server failed to bind %s: %w", addr, err)
 	}
 
-	// Of configured port is 0, port was assigned dynamically
+	// If configured port is 0, port was assigned dynamically
 	if s.cfg.Port == 0 {
 		s.cfg.Port = listener.Addr().(*net.TCPAddr).Port
 	}
@@ -73,15 +76,14 @@ func (s *Server) Start(ctx context.Context) error {
 	return nil
 }
 
-func (s *Server) Shutdown(ctx context.Context) error {
-	return s.httpServer.Shutdown(ctx)
+func registerHandlers(mux *http.ServeMux, srvc *service.Service) {
+	opts := connect.WithInterceptors(
+		interceptors.LoggingUnaryHandler(),
+	)
+
+	mux.Handle(handler.NewUserServer(srvc, opts))
 }
 
-// --- Internal Helpers ---
-
-func registerHandlers(mux *http.ServeMux, srvc *service.Service) {
-	// Interceptors for ConnectRPC (Business Logic)
-	/**opts := connect.WithInterceptors(
-		interceptors.LoggingUnaryHandler(),
-	)**/
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }

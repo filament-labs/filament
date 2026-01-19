@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/codemaestro64/filament/apps/api/pkg/util"
 	"github.com/spf13/viper"
 )
 
@@ -12,9 +13,11 @@ const AppName = "filament"
 
 const (
 	// App
-	KeyEnvironment = "server.environment"
-	KeyServerPort  = "server.port"
-	KeyServerHost  = "server.host"
+	KeyEnvironment    = "server.environment"
+	KeyServerPort     = "server.port"
+	KeyServerHost     = "server.host"
+	KeyNetwork        = "server.network"
+	KeySessionTimeout = "server.session_timeout"
 
 	// Database
 	KeyDBDriver   = "database.driver"
@@ -33,9 +36,11 @@ const (
 
 // App Config structs
 type ServerConfig struct {
-	Port        int
-	Host        string
-	Environment Env
+	Port           int
+	Host           string
+	Environment    Env
+	Network        util.Network
+	SessionTimeout int64
 }
 
 type DatabaseConfig struct {
@@ -64,9 +69,10 @@ type Config struct {
 func Load(env Env) (*Config, error) {
 	cfg := &Config{
 		Server: ServerConfig{
-			Environment: env,
-			Port:        viper.GetInt(KeyServerPort),
-			Host:        viper.GetString(KeyServerHost),
+			Environment:    env,
+			Port:           viper.GetInt(KeyServerPort),
+			Host:           viper.GetString(KeyServerHost),
+			SessionTimeout: viper.GetInt64(KeySessionTimeout),
 		},
 		Database: DatabaseConfig{
 			Driver:   viper.GetString(KeyDBDriver),
@@ -83,6 +89,12 @@ func Load(env Env) (*Config, error) {
 			MaxAge:     viper.GetInt(KeyLogMaxAge),
 		},
 	}
+
+	network := util.CalibrationNet
+	if n := viper.GetString(KeyNetwork); n == util.Mainnet.String() {
+		network = util.Mainnet
+	}
+	cfg.Server.Network = network
 
 	if err := validate(cfg); err != nil {
 		return nil, fmt.Errorf("invalid configuration: %w", err)

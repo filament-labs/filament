@@ -181,6 +181,52 @@ func (TransactionStatusType) EnumDescriptor() ([]byte, []int) {
 	return file_v1_types_proto_rawDescGZIP(), []int{2}
 }
 
+type NetworkType int32
+
+const (
+	NetworkType_NETWORK_MAINNET         NetworkType = 0
+	NetworkType_NETWORK_CALIBRATION_NET NetworkType = 1
+)
+
+// Enum value maps for NetworkType.
+var (
+	NetworkType_name = map[int32]string{
+		0: "NETWORK_MAINNET",
+		1: "NETWORK_CALIBRATION_NET",
+	}
+	NetworkType_value = map[string]int32{
+		"NETWORK_MAINNET":         0,
+		"NETWORK_CALIBRATION_NET": 1,
+	}
+)
+
+func (x NetworkType) Enum() *NetworkType {
+	p := new(NetworkType)
+	*p = x
+	return p
+}
+
+func (x NetworkType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (NetworkType) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1_types_proto_enumTypes[3].Descriptor()
+}
+
+func (NetworkType) Type() protoreflect.EnumType {
+	return &file_v1_types_proto_enumTypes[3]
+}
+
+func (x NetworkType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use NetworkType.Descriptor instead.
+func (NetworkType) EnumDescriptor() ([]byte, []int) {
+	return file_v1_types_proto_rawDescGZIP(), []int{3}
+}
+
 type Address struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Type          AddressType            `protobuf:"varint,1,opt,name=type,proto3,enum=wallet.v1.AddressType" json:"type,omitempty"`
@@ -605,6 +651,50 @@ func (x *Transaction) GetConfirmedT() *timestamppb.Timestamp {
 	return nil
 }
 
+type Settings struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Network       NetworkType            `protobuf:"varint,1,opt,name=network,proto3,enum=wallet.v1.NetworkType" json:"network,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Settings) Reset() {
+	*x = Settings{}
+	mi := &file_v1_types_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Settings) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Settings) ProtoMessage() {}
+
+func (x *Settings) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_types_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Settings.ProtoReflect.Descriptor instead.
+func (*Settings) Descriptor() ([]byte, []int) {
+	return file_v1_types_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Settings) GetNetwork() NetworkType {
+	if x != nil {
+		return x.Network
+	}
+	return NetworkType_NETWORK_MAINNET
+}
+
 var File_v1_types_proto protoreflect.FileDescriptor
 
 const file_v1_types_proto_rawDesc = "" +
@@ -645,7 +735,9 @@ const file_v1_types_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12;\n" +
 	"\vconfirmed_t\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"confirmedT*L\n" +
+	"confirmedT\"<\n" +
+	"\bSettings\x120\n" +
+	"\anetwork\x18\x01 \x01(\x0e2\x16.wallet.v1.NetworkTypeR\anetwork*L\n" +
 	"\vAddressType\x12\x13\n" +
 	"\x0fADDRESS_TYPE_F1\x10\x00\x12\x13\n" +
 	"\x0fADDRESS_TYPE_F4\x10\x01\x12\x13\n" +
@@ -661,7 +753,10 @@ const file_v1_types_proto_rawDesc = "" +
 	"\x1aTRANSACTION_STATUS_PENDING\x10\x01\x12 \n" +
 	"\x1cTRANSACTION_STATUS_CONFIRMED\x10\x02\x12\x1d\n" +
 	"\x19TRANSACTION_STATUS_FAILED\x10\x03\x12\x1f\n" +
-	"\x1bTRANSACTION_STATUS_CANCELED\x10\x04B=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
+	"\x1bTRANSACTION_STATUS_CANCELED\x10\x04*?\n" +
+	"\vNetworkType\x12\x13\n" +
+	"\x0fNETWORK_MAINNET\x10\x00\x12\x1b\n" +
+	"\x17NETWORK_CALIBRATION_NET\x10\x01B=Z;github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1b\x06proto3"
 
 var (
 	file_v1_types_proto_rawDescOnce sync.Once
@@ -675,40 +770,43 @@ func file_v1_types_proto_rawDescGZIP() []byte {
 	return file_v1_types_proto_rawDescData
 }
 
-var file_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_v1_types_proto_goTypes = []any{
 	(AddressType)(0),              // 0: wallet.v1.AddressType
 	(TransactionActionType)(0),    // 1: wallet.v1.TransactionActionType
 	(TransactionStatusType)(0),    // 2: wallet.v1.TransactionStatusType
-	(*Address)(nil),               // 3: wallet.v1.Address
-	(*Amount)(nil),                // 4: wallet.v1.Amount
-	(*Wallet)(nil),                // 5: wallet.v1.Wallet
-	(*TransactionType)(nil),       // 6: wallet.v1.TransactionType
-	(*TransactionStatus)(nil),     // 7: wallet.v1.TransactionStatus
-	(*Transaction)(nil),           // 8: wallet.v1.Transaction
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(NetworkType)(0),              // 3: wallet.v1.NetworkType
+	(*Address)(nil),               // 4: wallet.v1.Address
+	(*Amount)(nil),                // 5: wallet.v1.Amount
+	(*Wallet)(nil),                // 6: wallet.v1.Wallet
+	(*TransactionType)(nil),       // 7: wallet.v1.TransactionType
+	(*TransactionStatus)(nil),     // 8: wallet.v1.TransactionStatus
+	(*Transaction)(nil),           // 9: wallet.v1.Transaction
+	(*Settings)(nil),              // 10: wallet.v1.Settings
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
 var file_v1_types_proto_depIdxs = []int32{
 	0,  // 0: wallet.v1.Address.type:type_name -> wallet.v1.AddressType
-	3,  // 1: wallet.v1.Wallet.addresses:type_name -> wallet.v1.Address
-	4,  // 2: wallet.v1.Wallet.balance:type_name -> wallet.v1.Amount
-	9,  // 3: wallet.v1.Wallet.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 1: wallet.v1.Wallet.addresses:type_name -> wallet.v1.Address
+	5,  // 2: wallet.v1.Wallet.balance:type_name -> wallet.v1.Amount
+	11, // 3: wallet.v1.Wallet.created_at:type_name -> google.protobuf.Timestamp
 	1,  // 4: wallet.v1.TransactionType.type:type_name -> wallet.v1.TransactionActionType
 	2,  // 5: wallet.v1.TransactionStatus.type:type_name -> wallet.v1.TransactionStatusType
-	6,  // 6: wallet.v1.Transaction.type:type_name -> wallet.v1.TransactionType
-	7,  // 7: wallet.v1.Transaction.status:type_name -> wallet.v1.TransactionStatus
-	4,  // 8: wallet.v1.Transaction.amount:type_name -> wallet.v1.Amount
-	3,  // 9: wallet.v1.Transaction.source_address:type_name -> wallet.v1.Address
-	3,  // 10: wallet.v1.Transaction.destination_address:type_name -> wallet.v1.Address
-	4,  // 11: wallet.v1.Transaction.fee:type_name -> wallet.v1.Amount
-	9,  // 12: wallet.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 13: wallet.v1.Transaction.confirmed_t:type_name -> google.protobuf.Timestamp
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	7,  // 6: wallet.v1.Transaction.type:type_name -> wallet.v1.TransactionType
+	8,  // 7: wallet.v1.Transaction.status:type_name -> wallet.v1.TransactionStatus
+	5,  // 8: wallet.v1.Transaction.amount:type_name -> wallet.v1.Amount
+	4,  // 9: wallet.v1.Transaction.source_address:type_name -> wallet.v1.Address
+	4,  // 10: wallet.v1.Transaction.destination_address:type_name -> wallet.v1.Address
+	5,  // 11: wallet.v1.Transaction.fee:type_name -> wallet.v1.Amount
+	11, // 12: wallet.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
+	11, // 13: wallet.v1.Transaction.confirmed_t:type_name -> google.protobuf.Timestamp
+	3,  // 14: wallet.v1.Settings.network:type_name -> wallet.v1.NetworkType
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_v1_types_proto_init() }
@@ -721,8 +819,8 @@ func file_v1_types_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_types_proto_rawDesc), len(file_v1_types_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   6,
+			NumEnums:      4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -9,6 +9,30 @@ import (
 	"github.com/codemaestro64/filament/apps/api/internal/database/orm"
 )
 
+// The AddressFunc type is an adapter to allow the use of ordinary
+// function as Address mutator.
+type AddressFunc func(context.Context, *orm.AddressMutation) (orm.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AddressFunc) Mutate(ctx context.Context, m orm.Mutation) (orm.Value, error) {
+	if mv, ok := m.(*orm.AddressMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *orm.AddressMutation", m)
+}
+
+// The SettingFunc type is an adapter to allow the use of ordinary
+// function as Setting mutator.
+type SettingFunc func(context.Context, *orm.SettingMutation) (orm.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SettingFunc) Mutate(ctx context.Context, m orm.Mutation) (orm.Value, error) {
+	if mv, ok := m.(*orm.SettingMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *orm.SettingMutation", m)
+}
+
 // The WalletFunc type is an adapter to allow the use of ordinary
 // function as Wallet mutator.
 type WalletFunc func(context.Context, *orm.WalletMutation) (orm.Value, error)

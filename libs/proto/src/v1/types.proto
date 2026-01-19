@@ -54,6 +54,11 @@ enum TransactionStatusType {
   TRANSACTION_STATUS_CANCELED = 4;
 }
 
+enum NetworkType {
+  NETWORK_MAINNET = 0;
+  NETWORK_CALIBRATION_NET = 1;
+}
+
 message TransactionStatus {
   TransactionStatusType type = 1;
   string message = 2;          // Error details if FAILED
@@ -71,4 +76,8 @@ message Transaction {
   Amount fee = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp confirmed_t = 9;
+}
+
+message Settings {
+  NetworkType network = 1;
 }

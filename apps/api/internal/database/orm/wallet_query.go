@@ -4,6 +4,7 @@ package orm
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/codemaestro64/filament/apps/api/internal/database/orm/address"
 	"github.com/codemaestro64/filament/apps/api/internal/database/orm/predicate"
 	"github.com/codemaestro64/filament/apps/api/internal/database/orm/wallet"
 )
@@ -18,10 +20,11 @@ import (
 // WalletQuery is the builder for querying Wallet entities.
 type WalletQuery struct {
 	config
-	ctx        *QueryContext
-	order      []wallet.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Wallet
+	ctx           *QueryContext
+	order         []wallet.OrderOption
+	inters        []Interceptor
+	predicates    []predicate.Wallet
+	withAddresses *AddressQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +59,28 @@ func (_q *WalletQuery) Unique(unique bool) *WalletQuery {
 func (_q *WalletQuery) Order(o ...wallet.OrderOption) *WalletQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryAddresses chains the current query on the "addresses" edge.
+func (_q *WalletQuery) QueryAddresses() *AddressQuery {
+	query := (&AddressClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(wallet.Table, wallet.FieldID, selector),
+			sqlgraph.To(address.Table, address.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, wallet.AddressesTable, wallet.AddressesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Wallet entity from the query.
@@ -245,19 +270,43 @@ func (_q *WalletQuery) Clone() *WalletQuery {
 		return nil
 	}
 	return &WalletQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]wallet.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Wallet{}, _q.predicates...),
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]wallet.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.Wallet{}, _q.predicates...),
+		withAddresses: _q.withAddresses.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
+// WithAddresses tells the query-builder to eager-load the nodes that are connected to
+// the "addresses" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *WalletQuery) WithAddresses(opts ...func(*AddressQuery)) *WalletQuery {
+	query := (&AddressClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withAddresses = query
+	return _q
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		IsDefault bool `json:"is_default,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Wallet.Query().
+//		GroupBy(wallet.FieldIsDefault).
+//		Aggregate(orm.Count()).
+//		Scan(ctx, &v)
 func (_q *WalletQuery) GroupBy(field string, fields ...string) *WalletGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &WalletGroupBy{build: _q}
@@ -269,6 +318,16 @@ func (_q *WalletQuery) GroupBy(field string, fields ...string) *WalletGroupBy {
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		IsDefault bool `json:"is_default,omitempty"`
+//	}
+//
+//	client.Wallet.Query().
+//		Select(wallet.FieldIsDefault).
+//		Scan(ctx, &v)
 func (_q *WalletQuery) Select(fields ...string) *WalletSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
 	sbuild := &WalletSelect{WalletQuery: _q}
@@ -310,8 +369,11 @@ func (_q *WalletQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *WalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Wallet, error) {
 	var (
-		nodes = []*Wallet{}
-		_spec = _q.querySpec()
+		nodes       = []*Wallet{}
+		_spec       = _q.querySpec()
+		loadedTypes = [1]bool{
+			_q.withAddresses != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Wallet).scanValues(nil, columns)
@@ -319,6 +381,7 @@ func (_q *WalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Walle
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Wallet{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -330,7 +393,46 @@ func (_q *WalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Walle
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withAddresses; query != nil {
+		if err := _q.loadAddresses(ctx, query, nodes,
+			func(n *Wallet) { n.Edges.Addresses = []*Address{} },
+			func(n *Wallet, e *Address) { n.Edges.Addresses = append(n.Edges.Addresses, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *WalletQuery) loadAddresses(ctx context.Context, query *AddressQuery, nodes []*Wallet, init func(*Wallet), assign func(*Wallet, *Address)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Wallet)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Address(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(wallet.AddressesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.wallet_addresses
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "wallet_addresses" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "wallet_addresses" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (_q *WalletQuery) sqlCount(ctx context.Context) (int, error) {

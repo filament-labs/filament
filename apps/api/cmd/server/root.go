@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/codemaestro64/filament/apps/api/internal/config"
+	"github.com/codemaestro64/filament/apps/api/pkg/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -25,6 +26,8 @@ func init() {
 	/// Server flags
 	rootCmd.Flags().Int("port", 0, "Server port")
 	rootCmd.Flags().String("host", "0.0.0.0", "Server host")
+	rootCmd.Flags().String("network", "calibration", "Network")
+	rootCmd.Flags().Int64("session_timeout", 30, "Session Timeout (mins)")
 
 	// Database flags
 	rootCmd.Flags().String("db-driver", "sqlite", "Database driver")
@@ -43,6 +46,8 @@ func init() {
 	// Bind flags → config keys
 	_ = viper.BindPFlag(config.KeyServerPort, rootCmd.Flags().Lookup("port"))
 	_ = viper.BindPFlag(config.KeyServerHost, rootCmd.Flags().Lookup("host"))
+	_ = viper.BindPFlag(config.KeyNetwork, rootCmd.Flags().Lookup("network"))
+	_ = viper.BindPFlag(config.KeySessionTimeout, rootCmd.Flags().Lookup("session_timeout"))
 
 	_ = viper.BindPFlag(config.KeyDBDriver, rootCmd.Flags().Lookup("db-driver"))
 	_ = viper.BindPFlag(config.KeyDBHost, rootCmd.Flags().Lookup("db-host"))
@@ -61,6 +66,8 @@ func initConfig() {
 	// Server
 	viper.SetDefault(config.KeyServerPort, 0)
 	viper.SetDefault(config.KeyServerHost, "0.0.0.0")
+	viper.SetDefault(config.KeyNetwork, util.CalibrationNet.String())
+	viper.SetDefault(config.KeySessionTimeout, 30)
 
 	// Database
 	viper.SetDefault(config.KeyDBDriver, "sqlite")
@@ -105,9 +112,9 @@ func initConfig() {
 
 func getEnvFilePath() string {
 	switch Environment {
-	case "production":
+	case config.Production:
 		return ".env.production"
-	case "development":
+	case config.Development:
 		return ".env"
 	default:
 		return ""

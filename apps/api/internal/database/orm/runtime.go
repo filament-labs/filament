@@ -2,8 +2,48 @@
 
 package orm
 
+import (
+	"time"
+
+	"github.com/codemaestro64/filament/apps/api/internal/database/orm/address"
+	"github.com/codemaestro64/filament/apps/api/internal/database/orm/wallet"
+	"github.com/codemaestro64/filament/apps/api/internal/database/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	addressFields := schema.Address{}.Fields()
+	_ = addressFields
+	// addressDescAddress is the schema descriptor for address field.
+	addressDescAddress := addressFields[1].Descriptor()
+	// address.AddressValidator is a validator for the "address" field. It is called by the builders before save.
+	address.AddressValidator = addressDescAddress.Validators[0].(func(string) error)
+	walletFields := schema.Wallet{}.Fields()
+	_ = walletFields
+	// walletDescIsDefault is the schema descriptor for is_default field.
+	walletDescIsDefault := walletFields[0].Descriptor()
+	// wallet.DefaultIsDefault holds the default value on creation for the is_default field.
+	wallet.DefaultIsDefault = walletDescIsDefault.Default.(bool)
+	// walletDescName is the schema descriptor for name field.
+	walletDescName := walletFields[2].Descriptor()
+	// wallet.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	wallet.NameValidator = walletDescName.Validators[0].(func(string) error)
+	// walletDescEncryptedSeed is the schema descriptor for encrypted_seed field.
+	walletDescEncryptedSeed := walletFields[3].Descriptor()
+	// wallet.EncryptedSeedValidator is a validator for the "encrypted_seed" field. It is called by the builders before save.
+	wallet.EncryptedSeedValidator = walletDescEncryptedSeed.Validators[0].(func([]byte) error)
+	// walletDescEncryptedKeyJSON is the schema descriptor for encrypted_key_json field.
+	walletDescEncryptedKeyJSON := walletFields[4].Descriptor()
+	// wallet.EncryptedKeyJSONValidator is a validator for the "encrypted_key_json" field. It is called by the builders before save.
+	wallet.EncryptedKeyJSONValidator = walletDescEncryptedKeyJSON.Validators[0].(func([]byte) error)
+	// walletDescSalt is the schema descriptor for salt field.
+	walletDescSalt := walletFields[5].Descriptor()
+	// wallet.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
+	wallet.SaltValidator = walletDescSalt.Validators[0].(func([]byte) error)
+	// walletDescCreatedAt is the schema descriptor for created_at field.
+	walletDescCreatedAt := walletFields[6].Descriptor()
+	// wallet.DefaultCreatedAt holds the default value on creation for the created_at field.
+	wallet.DefaultCreatedAt = walletDescCreatedAt.Default.(func() time.Time)
 }
