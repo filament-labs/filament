@@ -1,0 +1,22 @@
+language: 'go'
+type: 'application'
+
+tasks:
+  generate:
+    command: 'go generate ./...'
+    platform: 'system'
+    inputs:
+      - 'internal/infra/database/schema/*.go'
+    outputs:
+      - 'internal/infra/database/orm'
+
+  dev:
+    command: 'go run cmd/server/**'
+    platform: 'system'
+
+  build:
+    command: 'go build -o server cmd/server/main.go'
+    platform: 'system'
+    
+    deps:
+      - 'proto:generate'

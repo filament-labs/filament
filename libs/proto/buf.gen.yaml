@@ -1,0 +1,18 @@
+# packages/proto/buf.gen.yaml
+version: v1
+plugins:
+  # Go Plugins
+  - plugin: go
+    out: gen/go
+    opt: paths=source_relative
+  - plugin: connect-go
+    out: gen/go
+    opt: paths=source_relative
+
+  # TypeScript/ES Plugins
+  - plugin: es
+    out: gen/ts
+    opt: target=ts
+  - plugin: connect-es
+    out: gen/ts
+    opt: target=ts

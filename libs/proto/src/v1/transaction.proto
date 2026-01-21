@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+import "v1/types.proto";
+
+option go_package="github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1";
+
+message SendTransactionRequest {
+  int64 source_wallet_id = 1;
+  string destination_address = 2;
+  Amount amount = 3;
+  optional Amount max_fee = 5;
+  optional string note = 4;
+}
+
+message SendTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message GetTransactionRequest {
+  string transaction_id = 1;
+}
+
+message GetTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message ListTransactionsRequest {
+  int64 wallet_id = 1;
+
+  // The 'id' of the last transaction from the previous batch.
+  // If empty, we start from the most recent.
+  optional int64 cursor = 2;
+
+  // Optional filters
+  optional TransactionType transaction_type = 3;
+  optional TransactionStatus transaction_status = 4;
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  bool has_more = 2;
+}
+
+message StreamTransactionsRequest {}
+
+message StreamTransactionsResponse{
+  Transaction transaction = 1;
+}
+
+service TransactionService {
+  // Initiate a new transaction (e.g., broadcasting to the network)
+  rpc SendTransaction(SendTransactionRequest) returns (SendTransactionResponse);
+
+  // Retrieve details for a specific transaction
+  rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse);
+
+  // Retrieve a list of transactions, typically for a specific wallet
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse);
+
+  // Streams transaction updates from the blockchain in real-time
+  rpc StreamWalletTransactions(StreamTransactionsRequest) returns (stream StreamTransactionsResponse);
+}

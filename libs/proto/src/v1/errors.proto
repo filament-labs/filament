@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+option go_package="github.com/codemaestro64/filament/libs/proto/gen/go/v1;pbv1";
+
+enum ErrorCode {
+  NONE = 0;
+  NOT_FOUND = 1;
+  VALIDATION_FAILED = 2;
+  INSUFFICIENT_FUNDS = 3;
+}
+
+message FieldViolation {
+  string field = 1;
+  string message = 2;
+}
+
+message ErrorDetails {
+  ErrorCode code = 1;
+  string message = 2;
+  repeated FieldViolation violations = 3;
+}
